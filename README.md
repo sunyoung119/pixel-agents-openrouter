@@ -1,8 +1,8 @@
 # pixel-agents-openrouter
 
-## OpenRouter의 여러 모델(GPT · Gemini · DeepSeek 등)을 각각 실제 도구를 쓰는 에이전트로 실행하고, 그 활동을 픽셀아트 사무실에 캐릭터로 실시간 시각화하는 프로젝트입니다. 각 캐릭터는 연결된 모델명을 달고, 모델이 실제로 호출한 도구에 따라 움직입니다. 상태 라벨은 한국어입니다.
+OpenRouter의 여러 모델(GPT · Gemini · DeepSeek 등)을 각각 실제 도구를 쓰는 에이전트로 실행하고, 그 활동을 픽셀아트 사무실에 캐릭터로 실시간 시각화하는 프로젝트입니다.<br>각 캐릭터는 연결된 모델명을 달고, 모델이 실제로 호출한 도구에 따라 움직입니다.<br>상태 라벨은 한국어입니다.
 
-## 바닐라 [Pixel Agents](https://github.com/pixel-agents-hq/pixel-agents)는 Claude Code 세션만 시각화하지만, 이 포크는 OpenRouter 멀티모델 시각화, 한국어화, 커스텀 캐릭터를 더했습니다. 그러면서 pixel-agents 코어/서버 소스는 한 줄도 수정하지 않았습니다.
+바닐라 [Pixel Agents](https://github.com/pixel-agents-hq/pixel-agents)는 Claude Code 세션만 시각화하지만, 이 포크는 OpenRouter 멀티모델 시각화, 한국어화, 커스텀 캐릭터를 더했습니다.<br>그러면서 pixel-agents 코어/서버 소스는 한 줄도 수정하지 않았습니다.
 
 ![세 개의 OpenRouter 모델이 각자 모델명을 달고 한국어 라벨과 함께 동시에 작업 중인 화면](docs/screenshot.png)
 
