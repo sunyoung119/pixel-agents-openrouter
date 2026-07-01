@@ -1,0 +1,52 @@
+# Compiled output
+out
+dist
+node_modules
+*.tsbuildinfo
+
+# Logs
+/logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode-test/
+/.idea
+
+# E2E test artifacts
+test-results/
+playwright-report/
+allure-results/
+allure-report/
+
+# Build artifacts
+*.vsix
+*.map
+
+# Environment files
+.env*
+!.env.example
+
+# Project-specific
+.claude
+.mcp.json
+/sprites-export
+.vercel/
+agent-orchestrator.yaml
+.worktrees
+
+# Local notes (not for commit)
+/notes/
+/docs/e2e-*.md
+!/docs/e2e-claude-mocking.md
+
+.playwright-mcp/
+# OpenRouter 데모 작업 폴더(런타임 생성)
+openrouter-agents/workspace/
+
+# 업스트림 CI 워크플로 (fork 토큰에 workflow scope 없음 → 미포함)
+.github/workflows/
