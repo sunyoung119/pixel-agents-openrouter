@@ -91,7 +91,9 @@ async function hook(server, payload) {
   }
 }
 
-const evSessionStart = (a) => ({ session_id: a.sessionId, hook_event_name: 'SessionStart', source: 'startup', cwd: REPO_ROOT.replace(/\\/g, '/') });
+// cwd 의 basename 이 캐릭터 이름(자막)이 된다(fileWatcher.ts: path.basename(cwd)).
+// 각 에이전트에 모델명 경로를 줘서 캐릭터마다 연결된 모델명이 표시되게 한다.
+const evSessionStart = (a) => ({ session_id: a.sessionId, hook_event_name: 'SessionStart', source: 'startup', cwd: a.cwd });
 const evPreTool = (a) => ({ session_id: a.sessionId, hook_event_name: 'PreToolUse', tool_name: a.tool, tool_input: a.toolInput ?? {} });
 const evPostTool = (a) => ({ session_id: a.sessionId, hook_event_name: 'PostToolUse', tool_name: a.tool });
 const evStop = (a) => ({ session_id: a.sessionId, hook_event_name: 'Stop' });
@@ -194,7 +196,7 @@ async function chat(apiKey, model, messages) {
   return j?.choices?.[0]?.message ?? { content: '' };
 }
 
-const setThinking = (a) => { a.tool = 'Bash'; a.toolInput = { command: `${a.short} 추론 중` }; };
+const setThinking = (a) => { a.tool = 'Bash'; a.toolInput = { command: '응답 생성 중' }; };
 const setActivity = (a, tool, input) => { a.tool = tool; a.toolInput = input; };
 const summarizeArgs = (args) => (args.path ? `"${args.path}"` : JSON.stringify(args).slice(0, 40));
 
@@ -296,7 +298,9 @@ async function main() {
       sessionId: `orl-${slug}-${crypto.randomUUID().slice(0, 8)}`,
       model,
       short,
-      sandbox: path.join(WORKSPACE_ROOT, slug),
+      // 각 모델이 실제로 작업하는 폴더(모델명으로 명명). 이 폴더명이 곧 캐릭터 이름(자막)이 된다.
+      sandbox: path.join(WORKSPACE_ROOT, short),
+      cwd: `${WORKSPACE_ROOT.replace(/\\/g, '/')}/${short}`,
       tool: 'Bash',
       toolInput: {},
       status: 'starting',
