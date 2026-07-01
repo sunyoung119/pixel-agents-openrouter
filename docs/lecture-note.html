@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>pixel-agents-openrouter 강의노트 — 초보자용: 뭘 바꿔서 뭐가 달라졌나</title>
+<style>
+  :root{
+    --bg:#f7f7fb; --fg:#1f2330; --muted:#5b6172; --card:#ffffff;
+    --accent:#4f46e5; --accent2:#0ea5e9; --line:#e5e7ef;
+    --code-bg:#0f1222; --code-fg:#e6e6f0; --code-key:#c792ea; --code-str:#c3e88d; --code-com:#6b7394;
+    --ok:#0a7c46; --ok-bg:#e7f6ee; --warn:#a15c00; --warn-bg:#fdf3e3; --was:#5b6172; --was-bg:#f0f0f4;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    line-height:1.75;font-size:16px}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 90px}
+  header.hero{background:linear-gradient(135deg,#4f46e5,#0ea5e9);color:#fff;padding:56px 20px 46px;margin-bottom:8px}
+  header.hero .inner{max-width:920px;margin:0 auto}
+  header.hero h1{margin:0 0 12px;font-size:29px;letter-spacing:-.3px;line-height:1.35}
+  header.hero p{margin:0;opacity:.96;font-size:17px;max-width:700px}
+  header.hero .tags{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px}
+  header.hero .tag{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+    padding:4px 12px;border-radius:999px;font-size:13px}
+  h2{margin:46px 0 14px;font-size:23px;border-bottom:2px solid var(--line);padding-bottom:8px;letter-spacing:-.2px}
+  h3{margin:26px 0 10px;font-size:18px;color:#2b2f3c}
+  p{margin:12px 0}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{font-family:"JetBrains Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace;
+    background:#ececf5;color:#3a3f7a;padding:1.5px 6px;border-radius:5px;font-size:.86em}
+  pre{background:var(--code-bg);color:var(--code-fg);padding:16px 18px;border-radius:12px;overflow:auto;
+    font-size:13.5px;line-height:1.6;margin:14px 0;box-shadow:0 6px 20px rgba(20,20,50,.12)}
+  pre code{background:none;color:inherit;padding:0;font-size:inherit}
+  pre .k{color:var(--code-key)} pre .s{color:var(--code-str)} pre .c{color:var(--code-com);font-style:italic}
+  pre .f{color:#82aaff} pre .n{color:#f78c6c}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:24px 0}
+  .toc h4{margin:0 0 8px;font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .toc ol{margin:0;padding-left:20px}
+  .toc li{margin:4px 0}
+  table{border-collapse:collapse;width:100%;margin:16px 0;background:var(--card);
+    border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  th,td{border-bottom:1px solid var(--line);padding:10px 14px;text-align:left;vertical-align:top;font-size:14.5px}
+  th{background:#f0f0f8;font-weight:700}
+  tr:last-child td{border-bottom:none}
+  .callout{border-left:4px solid var(--accent);background:#eef0ff;border-radius:0 10px 10px 0;
+    padding:12px 16px;margin:16px 0}
+  .callout.key{border-color:var(--accent2);background:#e7f6fd}
+  .callout.note{border-color:#f59e0b;background:#fff6e6}
+  .callout.plain{border-color:#9aa0b5;background:#f2f3f7}
+  .callout b{color:#2b2f3c}
+  .diagram{background:var(--card);border:1px dashed #b9bee0;border-radius:12px;padding:18px;margin:16px 0;
+    font-family:"JetBrains Mono",Consolas,monospace;font-size:12.5px;line-height:1.7;white-space:pre;overflow:auto;color:#2b2f3c}
+  .pill{display:inline-block;background:#e7f6fd;color:#0a5b7a;border-radius:6px;padding:1px 8px;font-size:12.5px;font-weight:600}
+  .small{font-size:13.5px;color:var(--muted)}
+  hr{border:none;border-top:1px solid var(--line);margin:36px 0}
+  footer{color:var(--muted);font-size:13.5px;text-align:center;margin-top:44px}
+
+  /* 단계 헤더 */
+  .stephead{display:flex;gap:14px;align-items:center;margin:40px 0 6px}
+  .stephead .num{flex:0 0 38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px}
+  .stephead h3{margin:0;font-size:20px;color:#20242e}
+  .stephead .lv{margin-left:auto;font-size:12px;color:var(--muted);border:1px solid var(--line);
+    border-radius:999px;padding:2px 10px;background:#fff}
+
+  /* before → change → after 3박자 카드 */
+  .change{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:14px 0 6px}
+  .change .box{border-radius:12px;padding:14px 16px;font-size:14px}
+  .change .tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.04em;
+    text-transform:uppercase;padding:2px 8px;border-radius:6px;margin-bottom:8px}
+  .change .was{background:var(--was-bg)}
+  .change .was .tag{background:#e0e1e8;color:#474b59}
+  .change .did{background:#eef0ff}
+  .change .did .tag{background:#dcdefb;color:#3730a3}
+  .change .now{background:var(--ok-bg)}
+  .change .now .tag{background:#cde dc;background:#cdeedc;color:#0a5b38}
+  .change .box b{color:#20242e}
+  .change code{font-size:.8em}
+  @media (max-width:720px){ .change{grid-template-columns:1fr} }
+
+  .why{background:#fbfbfe;border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:12px 0}
+  .why b{color:#2b2f3c}
+  .concept{border-left:4px solid var(--ok);background:var(--ok-bg);border-radius:0 10px 10px 0;
+    padding:10px 16px;margin:14px 0;font-size:14.5px}
+  .concept b{color:#0a5b38}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="inner">
+    <h1>Claude만 되던 픽셀 사무실을,<br>GPT·Gemini도 되게 만들기 — 단계별로</h1>
+    <p>이 노트는 초보자용입니다. 어려운 개념을 늘어놓는 대신, <b>단계마다 "원래는 이랬다 → 이 부분을 이렇게 바꿨다 →
+       그래서 이렇게 달라졌다"</b> 세 칸으로 보여줍니다. 코드는 핵심만, 나머지는 말로 풉니다.</p>
+    <div class="tags">
+      <span class="tag">초보자용</span>
+      <span class="tag">before → after</span>
+      <span class="tag">코어 무수정</span>
+      <span class="tag">브리지</span>
+      <span class="tag">function calling</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="toc">
+    <h4>목차</h4>
+    <ol>
+      <li><a href="#ch0">이 노트가 답하는 것 (한 문장)</a></li>
+      <li><a href="#ch1">준비운동 — 원래 프로그램이 뭐하는 거였나</a></li>
+      <li><a href="#ch2">목표 — 뭘 하고 싶었나</a></li>
+      <li><a href="#map">바꾼 파일 지도</a></li>
+      <li><a href="#s1">단계 1 — 말부터 한국어로</a></li>
+      <li><a href="#s2">단계 2 — 다른 모델을 무대에 올리기 (브리지)</a></li>
+      <li><a href="#s3">단계 3 — 캐릭터가 '진짜로' 일하게</a></li>
+      <li><a href="#s4">단계 4 — 캐릭터에 모델 이름표 붙이기</a></li>
+      <li><a href="#s5">단계 5 — 캐릭터 그림 바꾸기</a></li>
+      <li><a href="#whole">전체를 한 그림으로</a></li>
+      <li><a href="#take">챙겨갈 개념 5가지</a></li>
+    </ol>
+  </div>
+
+  <!-- ===== 0 ===== -->
+  <h2 id="ch0">0. 이 노트가 답하는 것</h2>
+  <div class="callout key">
+    <b>한 문장.</b> "AI가 일하는 걸 픽셀 캐릭터로 보여주는 프로그램(Pixel Agents)"이 <b>원래는 Claude 하나만</b>
+    보여줬는데, 내가 <b>서버를 한 줄도 안 고치고</b> GPT·Gemini 같은 다른 모델도 캐릭터로 등장시키고,
+    글자를 한국어로 바꾸고, 캐릭터 그림까지 갈아끼운 과정입니다.
+  </div>
+  <p>가장 신기하고 중요한 부분은 <b>"서버를 안 고쳤다"</b>는 점이에요. 남이 만든 프로그램을 뜯어고치지 않고도
+     기능을 붙일 수 있었던 이유 — 그게 이 노트의 진짜 주제입니다.</p>
+
+  <!-- ===== 1 ===== -->
+  <h2 id="ch1">1. 준비운동 — 원래 프로그램이 뭐하는 거였나</h2>
+  <p>Pixel Agents는 AI 코딩 도구(Claude Code)가 일하는 모습을, 도트 그래픽 사무실에서 캐릭터가 타이핑하고
+     책을 읽는 애니메이션으로 보여주는 프로그램이에요. 여기서 딱 하나만 기억하면 됩니다.</p>
+
+  <div class="callout key">
+    <b>Pixel Agents는 "관찰형"이다.</b> 스스로 AI를 실행하지 않아요. AI가 "나 지금 이 파일 읽어요"라고
+    <b>보내주는 소식(이벤트)만 받아서</b> 그림을 그립니다.
+  </div>
+
+  <p>비유하면 <b>관제실 화면</b>이에요. 현장 작업자가 무전으로 "나 지금 3층 점검 중"이라고 하면, 관제 화면의
+     내 아이콘이 3층으로 움직이는 거죠. 관제 화면은 직접 현장에 가지 않아요. <b>무전만 듣습니다.</b></p>
+
+  <div class="callout plain">
+    <b>핵심 포인트.</b> 관제 화면은 무전 <b>내용의 형식(규격)만 맞으면</b> 그게 누구 무전인지 안 따집니다.
+    이 성질이 나중에 "다른 모델도 띄우기"를 가능하게 하는 열쇠예요. 지금은 이 한 줄만 기억하세요.
+  </div>
+
+  <p>그런데 원래 Pixel Agents에서 이 무전을 칠 줄 아는 건 <b>Claude Code 하나뿐</b>이었어요. Claude Code는
+     실행되면 자동으로 "나 파일 읽기 시작", "다 읽음" 같은 무전을 서버로 보내도록 만들어져 있거든요.</p>
+
+  <!-- ===== 2 ===== -->
+  <h2 id="ch2">2. 목표 — 뭘 하고 싶었나</h2>
+  <p>나는 <b>GPT, Gemini, DeepSeek 같은 다른 모델도</b> 이 사무실에 캐릭터로 띄우고 싶었어요.
+     그런데 바로 문제에 부딪힙니다.</p>
+
+  <div class="callout note">
+    <b>문제.</b> GPT·Gemini에는 Claude Code 같은 <b>"자동으로 무전 치는 기능"이 없습니다.</b> 게다가
+    Pixel Agents는 관찰형이라 그 모델들을 <b>스스로 들여다볼 수도 없어요.</b> 무전이 안 오면 화면엔
+    아무 캐릭터도 안 뜹니다.
+  </div>
+
+  <p>여기서 1장의 열쇠가 등장합니다. <b>서버는 무전 규격만 맞으면 누가 보냈는지 안 따진다.</b>
+     그러면 답은 간단해요.</p>
+
+  <div class="callout key">
+    <b>큰 그림 해법.</b> "GPT를 실행하면서, <b>그 활동을 무전 규격에 맞춰 대신 보내주는 프로그램</b>"을
+    하나 만들면 된다. 이 대신 보내주는 프로그램을 <b>브리지(bridge)</b>라고 부를게요.
+    파일 이름은 <code>openrouter-agents/run.mjs</code>입니다.
+  </div>
+
+  <p>이제부터 이걸 다섯 단계로 나눠서, 각 단계마다 <b>원래 → 바꾼 것 → 결과</b>를 봅니다. 쉬운 것부터 시작해요.</p>
+
+  <!-- ===== 파일 지도 ===== -->
+  <h2 id="map">바꾼 파일 지도 (미리 한눈에)</h2>
+  <table>
+    <tr><th>단계</th><th>바꾼/만든 파일</th><th>한 일</th></tr>
+    <tr><td>1</td><td><code>server/.../claude.ts</code></td><td>캐릭터 위 글자를 한국어로 (문구만)</td></tr>
+    <tr><td>2·3·4</td><td><code>openrouter-agents/run.mjs</code> <span class="pill">신규</span></td><td>다른 모델을 실행하며 무전을 대신 보내는 브리지</td></tr>
+    <tr><td>5</td><td><code>webview-ui/.../characters/</code></td><td>캐릭터 그림(스프라이트) 교체</td></tr>
+  </table>
+  <p class="small">보다시피 <b>pixel-agents의 서버·핵심 로직 파일은 안 건드립니다.</b> 새로 만든 건 브리지 하나뿐이고,
+     나머지는 글자와 그림 교체예요.</p>
+
+  <!-- ===== 단계 1 ===== -->
+  <div class="stephead"><div class="num">1</div><h3 id="s1">말부터 한국어로</h3><span class="lv">난이도 ★☆☆</span></div>
+  <p>가장 쉬운 워밍업. 캐릭터 머리 위에 뜨는 글자만 한국어로 바꿉니다.</p>
+
+  <div class="change">
+    <div class="box was"><span class="tag">원래는</span>캐릭터 위 글자가 영어였어요. <code>Reading foo.ts</code> 처럼.</div>
+    <div class="box did"><span class="tag">이렇게 바꿈</span><code>claude.ts</code>의 <code>formatToolStatus()</code> 함수에서 <b>문구만</b> 한국어로 교체.</div>
+    <div class="box now"><span class="tag">그래서</span><code>foo.ts 읽는 중</code> 처럼 한국어로 표시돼요.</div>
+  </div>
+
+  <pre><code><span class="c">// server/src/providers/hook/claude/claude.ts — formatToolStatus()</span>
+<span class="c">// [원래]</span>
+<span class="k">case</span> <span class="s">'Read'</span>:  <span class="k">return</span> <span class="s">`Reading ${base(inp.file_path)}`</span>;
+<span class="k">case</span> <span class="s">'Grep'</span>:  <span class="k">return</span> <span class="s">'Searching code'</span>;
+
+<span class="c">// [바꿈]</span>
+<span class="k">case</span> <span class="s">'Read'</span>:  <span class="k">return</span> <span class="s">`${base(inp.file_path)} 읽는 중`</span>;
+<span class="k">case</span> <span class="s">'Grep'</span>:  <span class="k">return</span> <span class="s">'코드 검색 중'</span>;</code></pre>
+
+  <div class="concept"><b>여기서 배우는 것 — 표현과 로직의 분리.</b> "보여주는 글자"를 만드는 부분이 이 함수 한 곳에
+    모여 있어요. 그래서 <b>기능(로직)은 안 건드리고 글자만</b> 안전하게 바꿀 수 있었죠. 프로그램이 이렇게
+    나뉘어 있으면 초보자도 안심하고 고칠 수 있습니다.</div>
+
+  <!-- ===== 단계 2 ===== -->
+  <div class="stephead"><div class="num">2</div><h3 id="s2">다른 모델을 무대에 올리기 (브리지)</h3><span class="lv">난이도 ★★★ 핵심</span></div>
+  <p>이 단계가 프로젝트의 심장이에요. GPT를 사무실에 <b>등장시키는</b> 부분.</p>
+
+  <div class="change">
+    <div class="box was"><span class="tag">원래는</span>Claude Code만 자동으로 서버에 무전(이벤트)을 보냈어요. GPT는 무전 기능이 없어 화면에 안 떴죠.</div>
+    <div class="box did"><span class="tag">이렇게 바꿈</span><code>run.mjs</code>라는 새 프로그램을 만들어, GPT를 돌리면서 <b>그 활동을 무전 규격에 맞춰 서버로 대신 전송.</b></div>
+    <div class="box now"><span class="tag">그래서</span>GPT가 사무실에 캐릭터로 등장! 서버는 무전 규격이 맞으니 그냥 받아줍니다.</div>
+  </div>
+
+  <p>브리지가 보내는 무전은 Claude가 보내던 것과 <b>똑같은 모양</b>이에요. 그래서 서버에 이미 있던
+     "무전 받는 창구"를 그대로 씁니다. 무전 하나는 이렇게 생겼어요.</p>
+
+  <pre><code><span class="c">// 캐릭터 등장 → 도구 사용 → 완료 → 퇴장  (Claude가 보내던 것과 같은 규격)</span>
+POST /api/hooks/claude   Authorization: Bearer &lt;token&gt;
+{ <span class="s">"session_id"</span>: <span class="s">"orl-gpt-4o-mini-ab12"</span>, <span class="s">"hook_event_name"</span>: <span class="s">"SessionStart"</span> }
+{ <span class="s">"session_id"</span>: <span class="s">"orl-gpt-4o-mini-ab12"</span>, <span class="s">"hook_event_name"</span>: <span class="s">"PreToolUse"</span>,
+  <span class="s">"tool_name"</span>: <span class="s">"Read"</span>, <span class="s">"tool_input"</span>: { <span class="s">"file_path"</span>: <span class="s">"data.json"</span> } }
+{ <span class="s">"session_id"</span>: <span class="s">"orl-gpt-4o-mini-ab12"</span>, <span class="s">"hook_event_name"</span>: <span class="s">"Stop"</span> }</code></pre>
+
+  <div class="why"><b>초보자 풀이 — "무전 받는 창구"가 뭐예요?</b> 서버가 열어둔 주소예요
+    (<code>POST /api/hooks/…</code>). 프로그램이 서로 데이터를 주고받는 우편함이라고 생각하면 됩니다.
+    서버는 이 우편함에 규격 맞는 편지가 오면 캐릭터를 움직여요. <b>편지를 누가 넣었는지는 안 물어봐요.</b>
+    그래서 브리지가 대신 넣어도 통하는 거죠.</div>
+
+  <div class="concept"><b>여기서 배우는 것 — 계약(contract) 기반 통합.</b> 남의 프로그램을 뜯어고치는 대신,
+    그 프로그램이 <b>공개해 둔 규칙(우편함 주소 + 편지 형식)</b>만 지켜서 데이터를 넣었어요. 그래서
+    <b>서버 코드를 한 줄도 안 고치고</b> 새 기능이 붙었습니다. 이게 "코어 무수정"의 정체예요.</div>
+
+  <!-- ===== 단계 3 ===== -->
+  <div class="stephead"><div class="num">3</div><h3 id="s3">캐릭터가 '진짜로' 일하게</h3><span class="lv">난이도 ★★☆</span></div>
+  <p>단계 2로 캐릭터는 떴어요. 그런데 그 캐릭터가 <b>진짜 일을 하는지, 연기를 하는지</b>가 갈리는 지점입니다.</p>
+
+  <div class="change">
+    <div class="box was"><span class="tag">순진한 방법</span>"읽기 → 쓰기 → 끝" 순서를 <b>미리 짜서 재생</b>. 그럴듯하지만 모델이 실제로 뭘 하는지와 무관한 <b>가짜 연기</b>.</div>
+    <div class="box did"><span class="tag">이렇게 바꿈</span>모델에게 <b>진짜 도구</b>(파일 읽기·쓰기)를 쥐여주고(function calling), 모델이 <b>스스로 고른 도구</b>를 그대로 무전으로 보냄.</div>
+    <div class="box now"><span class="tag">그래서</span>모델마다 일하는 순서가 <b>다릅니다.</b> 그리고 실제로 <code>summary.md</code> 파일을 만들어요. 진짜니까요.</div>
+  </div>
+
+  <pre><code><span class="c">// openrouter-agents/run.mjs — 에이전트 루프 (단순화)</span>
+<span class="k">while</span> (step++ &lt; MAX_STEPS) {
+  <span class="k">const</span> msg = <span class="k">await</span> <span class="f">chat</span>(model, messages, TOOLS);   <span class="c">// 모델에게 물어봄</span>
+  <span class="k">if</span> (!msg.tool_calls) { <span class="f">hook</span>(Stop); <span class="k">break</span>; }    <span class="c">// 도구 안 부르면 = 일 끝</span>
+  <span class="k">for</span> (<span class="k">const</span> call <span class="k">of</span> msg.tool_calls) {          <span class="c">// 모델이 '실제로' 부른 도구</span>
+    <span class="f">hook</span>(PreToolUse, TOOL_MAP[call.name]);       <span class="c">// → 캐릭터가 그 활동을 함 (무전)</span>
+    <span class="k">const</span> result = <span class="f">executeTool</span>(call.name, call.args); <span class="c">// 진짜로 실행</span>
+    <span class="f">hook</span>(PostToolUse);
+    messages.push({ role: <span class="s">'tool'</span>, content: result }); <span class="c">// 결과를 모델에게 돌려줌</span>
+  }
+}</code></pre>
+
+  <div class="why"><b>초보자 풀이 — function calling이 뭐예요?</b> 모델은 스스로 파일을 열 손이 없어요.
+    대신 <b>"이 도구 좀 써주세요"라고 요청</b>할 수 있게 도구 목록을 줍니다. 모델이 "read_file(data.json)
+    불러줘"라고 하면, <b>내 코드가 실제로 파일을 읽어서 결과를 모델에게 돌려줘요.</b> 이
+    <b>물어보기 → 도구 실행 → 결과 돌려주기</b>의 반복이 바로 "에이전트"입니다.</div>
+
+  <div class="concept"><b>여기서 배우는 것 — 연출과 실제의 차이.</b> 미리 짠 순서를 재생하면 데모는 되지만
+    거짓이에요. 실제 도구 호출을 그대로 보여주면, 모델마다 다른 진짜 행동이 화면에 나타납니다.
+    "보여주기"가 아니라 "실제로 시키기"가 이 프로젝트가 진짜인 이유예요.</div>
+
+  <!-- ===== 단계 4 ===== -->
+  <div class="stephead"><div class="num">4</div><h3 id="s4">캐릭터에 모델 이름표 붙이기</h3><span class="lv">난이도 ★★☆</span></div>
+  <p>모델들이 떴는데, 처음엔 이름이 다 똑같았어요. 이걸 각자 모델명으로 바꾼 이야기.</p>
+
+  <div class="change">
+    <div class="box was"><span class="tag">문제</span>캐릭터 이름이 전부 <code>pixel-agents-main</code>으로 똑같이 나왔어요. 누가 GPT고 누가 Gemini인지 구분 불가.</div>
+    <div class="box did"><span class="tag">원인 추적 → 바꿈</span>서버는 캐릭터 이름을 <b>'작업 폴더의 마지막 이름'</b>으로 정하더라고요. 그래서 각 모델이 <b>자기 모델명 폴더</b>에서 일하게 함.</div>
+    <div class="box now"><span class="tag">그래서</span>폴더 이름 = 모델 이름 = 캐릭터 이름. <code>gpt-4o-mini</code>, <code>gemini-2.5-flash</code>로 딱 구분돼요.</div>
+  </div>
+
+  <pre><code><span class="c">// 서버가 이름을 정하는 방식 (원본 코드, 안 고침)</span>
+<span class="k">const</span> folderName = cwd ? path.<span class="f">basename</span>(cwd) : undefined;   <span class="c">// ← 캐릭터 이름</span>
+
+<span class="c">// 그래서 브리지에서 각 모델의 작업 폴더를 '모델명'으로 지정</span>
+cwd: <span class="s">`${WORKSPACE_ROOT}/gpt-4o-mini`</span>   <span class="c">// → 캐릭터 이름 = "gpt-4o-mini"</span></code></pre>
+
+  <div class="concept"><b>여기서 배우는 것 — 시스템의 규칙을 이해하고 맞추기.</b> 이름이 이상하게 나올 때
+    <b>서버를 고치려 들지 않았어요.</b> 대신 "서버가 어떤 규칙으로 이름을 정하나?"를 알아냈고
+    (폴더명이었죠), 그 규칙에 맞게 <b>입력 데이터를 조정</b>했습니다. 남의 프로그램과 협력하는 정석이에요.</div>
+
+  <!-- ===== 단계 5 ===== -->
+  <div class="stephead"><div class="num">5</div><h3 id="s5">캐릭터 그림 바꾸기</h3><span class="lv">난이도 ★★☆</span></div>
+  <p>마지막으로 캐릭터 <b>그림</b>을 갈아끼웁니다. (네가 직접 소방관으로 바꿔본 그 작업이에요.)</p>
+
+  <div class="change">
+    <div class="box was"><span class="tag">원래는</span>기본 제공 캐릭터 6종.</div>
+    <div class="box did"><span class="tag">이렇게 바꿈</span><code>char_0.png</code>~<code>char_5.png</code>를 <b>규격에 맞는 커스텀 그림</b>으로 덮어쓰기.</div>
+    <div class="box now"><span class="tag">그래서</span>내가 원하는 캐릭터가 사무실에 등장. (코드는 0줄 수정.)</div>
+  </div>
+
+  <p>여기서 중요한 건 <b>아무 그림이나 넣으면 안 된다</b>는 점이에요. 렌더 엔진이 기대하는 정확한 규격이 있어요.</p>
+  <table>
+    <tr><th>항목</th><th>규격</th></tr>
+    <tr><td>파일</td><td><code>char_0.png</code> ~ <code>char_5.png</code> (6개)</td></tr>
+    <tr><td>크기</td><td>112 × 96 픽셀</td></tr>
+    <tr><td>배치</td><td>가로 7프레임(16px) × 세로 3방향(32px) = 21칸. 행0=정면, 행1=뒤, 행2=오른쪽 (왼쪽은 자동 반전)</td></tr>
+    <tr><td>프레임 순서</td><td>걷기1·걷기2·걷기3 · 타이핑1·타이핑2 · 읽기1·읽기2</td></tr>
+    <tr><td>필수</td><td>배경 투명 · <b>21칸 모두 발 높이(바닥선) 동일</b></td></tr>
+  </table>
+
+  <div class="why"><b>초보자 풀이 — 스프라이트 시트가 뭐예요?</b> 한 장의 그림을 <b>격자로 잘라</b> 여러 장면을
+    뽑고, 그걸 빠르게 순서대로 보여주면 움직이는 것처럼 보여요(만화 플립북이랑 같아요). 그래서 아무렇게나
+    그리면 안 되고, <b>격자 칸과 발 높이를 정확히 맞춰야</b> 걷기·앉기가 자연스럽습니다. 발 높이가 칸마다
+    다르면 걸을 때 캐릭터가 위아래로 통통 튀어요.</div>
+
+  <div class="concept"><b>여기서 배우는 것 — 규격이 곧 계약.</b> 단계 2의 "무전 규격"과 똑같은 원리예요.
+    그림도 <b>정해진 규격(격자·크기·발높이)만 지키면</b> 코드를 안 고치고 교체됩니다. 프로그램의 여러
+    부분이 "정해진 약속"으로 연결돼 있다는 걸 그림에서도 다시 확인하는 거죠.</div>
+
+  <!-- ===== 전체 그림 ===== -->
+  <h2 id="whole">전체를 한 그림으로</h2>
+  <p>다섯 단계를 하나로 이으면 이렇게 흘러요.</p>
+  <div class="diagram">┌──────────── openrouter-agents/run.mjs (내가 만든 브리지) ────────────┐
+│                                                                     │
+│   .env 에 적은 모델마다:                                              │
+│     ┌──────────────┐   도구 목록 줌    ┌──────────────────┐          │
+│     │  에이전트 루프 │ ───────────────▶ │ OpenRouter        │          │
+│     │  (단계 3)    │ ◀─────────────── │ (gpt/gemini/…)    │          │
+│     └──────┬───────┘   "이 도구 써줘"  └──────────────────┘          │
+│            │  모델이 실제로 부른 도구를 '무전'으로                     │
+└────────────┼─────────────────────────────────────────────────────────┘
+             │  POST /api/hooks/claude   (단계 2: 규격 맞는 무전)
+             ▼
+      ┌──────────────────┐   표준 형태로 번역   ┌────────────┐   전송   ┌───────────┐
+      │ pixel-agents 서버 │ ──────────────────▶ │ 표준 이벤트  │ ──────▶ │ 픽셀 오피스 │
+      │  (원본, 안 고침)  │                     │  + 상태     │  실시간  │  (화면)   │
+      └──────────────────┘                     └────────────┘          └───────────┘
+        · 캐릭터 이름 = 폴더명 = 모델명   (단계 4)
+        · 캐릭터 위 글자 = 한국어         (단계 1)
+        · 캐릭터 그림 = 커스텀 스프라이트  (단계 5)</div>
+
+  <!-- ===== 챙겨갈 것 ===== -->
+  <h2 id="take">챙겨갈 개념 5가지 (아주 쉽게)</h2>
+  <div class="concept"><b>1. 관찰형.</b> "보여주는 프로그램"과 "실제로 실행하는 프로그램"은 다를 수 있다.
+    Pixel Agents는 보여주기만 하고, 실행은 브리지가 했다.</div>
+  <div class="concept"><b>2. 계약(약속) 기반 통합.</b> 남의 프로그램을 안 고쳐도, 그 프로그램이 정해둔
+    약속(우편함 주소 + 편지 형식 + 이름 규칙)만 지키면 새 기능을 붙일 수 있다.</div>
+  <div class="concept"><b>3. 정규화(번역 문지기).</b> 제각각으로 들어온 무전을 서버가 <b>하나의 표준 형태</b>로
+    바꾼다. 그래서 뒷단은 무전을 누가 보냈든 신경 안 써도 된다.</div>
+  <div class="concept"><b>4. 에이전트 루프.</b> "모델에게 물어보기 → 도구 실제 실행 → 결과 돌려주기"의
+    반복. 이 반복이 AI 에이전트의 본질이다.</div>
+  <div class="concept"><b>5. 표현/로직 분리.</b> 글자·그림 같은 "겉모습"이 기능과 나뉘어 있으면,
+    기능을 안 건드리고도 안전하게 바꿀 수 있다. (한국어화·캐릭터 교체가 쉬웠던 이유.)</div>
+
+  <hr />
+  <p class="small">이 노트는 <a href="../README.md">README</a>의 요약을 초보자용으로 풀어 쓴 것입니다.
+    실제 실행 방법과 파일 목록은 README를, 원본 아키텍처는 <code>CLAUDE.md</code>를 참고하세요.</p>
+
+  <footer>
+    pixel-agents-openrouter · 초보자용 강의노트 · 원본
+    <a href="https://github.com/pixel-agents-hq/pixel-agents">Pixel Agents</a> (MIT)
+  </footer>
+</div>
+</body>
+</html>
